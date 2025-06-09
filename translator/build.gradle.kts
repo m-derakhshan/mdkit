@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+group = "com.github.m-derakhshan"
+version = "1.0.0"
+
+
 android {
     namespace = "media.hiway.mdkit.translator"
     compileSdk = 36
