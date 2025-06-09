@@ -1,0 +1,67 @@
+[versions]
+agp = "8.12.0-alpha04"
+kotlin = "2.1.21"
+coreKtx = "1.16.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.9.1"
+activityCompose = "1.10.1"
+composeBom = "2025.06.00"
+appcompat = "1.7.1"
+material = "1.12.0"
+
+google-dagger-hilt = "2.56.2"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+
+
+
+#--------------retrofit----------------
+squareup-retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "3.0.0" }
+squareup-okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0" }
+squareup-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version = "3.0.0" }
+#--------------retrofit----------------
+
+
+
+#--------------datastore----------------
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version = "1.1.5" }
+jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.8.1" }
+jetbrains-kotlin-seralization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+#--------------datastore----------------
+
+
+#-------------------- Dagger hilt --------------------
+google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "google-dagger-hilt" }
+google-dagger-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "google-dagger-hilt" }
+google-dagger-hilt-android-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "google-dagger-hilt" }
+#-------------------- Dagger hilt --------------------
+
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+dagger-hilt-android-plugin = { id = "dagger.hilt.android.plugin"}
+google-devtools-ksp = { id = "com.google.devtools.ksp", version = "2.1.21-2.0.1" }
+
