@@ -1,8 +1,11 @@
 package media.hiway.mdkit.translator.presentation.composable
 
+import android.util.Log
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,12 +20,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dagger.hilt.android.EntryPointAccessors
+import media.hiway.mdkit.translator.presentation.utils.TextAppearance
 import media.hiway.mdkit.translator.presentation.utils.TranslationEntryPoint
 
 
 @Composable
 fun Text(
     text: String,
+    keepCase: Boolean = false,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -38,7 +43,7 @@ fun Text(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     val context = LocalContext.current
 
@@ -48,9 +53,24 @@ fun Text(
             entryPoint = TranslationEntryPoint::class.java
         ).getTranslator().getTranslation
     }
+    val textAppearance by remember(text) {
+        mutableStateOf(
+            when {
+                keepCase.not() -> TextAppearance.MixedCase
+                text.filter { it.isLetter() }.all { it.isUpperCase() } -> TextAppearance.UpperCase
+                text.filter { it.isLetter() }.all { it.isLowerCase() } -> TextAppearance.LowerCase
+                else -> TextAppearance.MixedCase
+            })
+    }
 
     androidx.compose.material3.Text(
-        text = translator(text).collectAsState("").value,
+        text = translator(text).collectAsState("").value.let { translatedText ->
+            when (textAppearance) {
+                is TextAppearance.UpperCase -> translatedText.uppercase()
+                is TextAppearance.LowerCase -> translatedText.lowercase()
+                is TextAppearance.MixedCase -> translatedText
+            }
+        },
         modifier = modifier,
         color = color,
         fontSize = fontSize,

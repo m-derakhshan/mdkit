@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .safeContentPadding()
                     ) {
-                        Text(text = "404-BUTTON")
+                        Text(text = "404-BUTTON".uppercase(), keepCase = true)
                         Text(text = "404-TEXT")
                         Text(text = "404-DESCRIPTION")
 

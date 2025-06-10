@@ -40,7 +40,7 @@ class TranslationRepositoryImpl(
                         val translation =
                             JsonParser.parseString(file.translation)?.asJsonObject?.get(currentLang)?.asJsonObject?.entrySet()
                                 ?.associate { item ->
-                                    item.key to item.value.asString
+                                    item.key.uppercase() to item.value.asString //! Convert keys to uppercase to maintain consistency
                                 } ?: emptyMap()
                         translationCache.update { translation }
                     }.onFailure {
@@ -62,7 +62,7 @@ class TranslationRepositoryImpl(
                 translationDataStore.data().firstOrNull()?.currentLang?.takeUnless { it.isBlank() }
             val language = currentLanguage ?: config.initLanguage.code
             val translation = file.get(language)?.asJsonObject?.entrySet()?.associate { item ->
-                item.key to item.value.asString
+                item.key.uppercase() to item.value.asString //! Convert keys to uppercase to maintain consistency
             } ?: emptyMap()
             translationDataStore.updateData { translation ->
                 translation.copy(
@@ -96,7 +96,8 @@ class TranslationRepositoryImpl(
     }
 
     override fun getTranslation(key: String): Flow<String> {
-        return translationCache.map { it[key] ?: key }.distinctUntilChanged()
+        //! Convert the key to uppercase to match the cache keys
+        return translationCache.map { it[key.uppercase()] ?: key }.distinctUntilChanged()
     }
 
     override suspend fun updateCurrentLanguage(language: TranslationLanguage) {
