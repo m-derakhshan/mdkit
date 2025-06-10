@@ -1,5 +1,5 @@
 [versions]
-agp = "8.12.0-alpha04"
+agp = "8.10.1"
 kotlin = "2.1.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -43,7 +43,7 @@ squareup-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 
 
 #--------------datastore----------------
-androidx-datastore = { group = "androidx.datastore", name = "datastore", version = "1.1.5" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version = "1.1.7" }
 jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.8.1" }
 jetbrains-kotlin-seralization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 #--------------datastore----------------
