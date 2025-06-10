@@ -22,7 +22,7 @@ import media.hiway.mdkit.translator.domain.repository.TranslationRepository
 class TranslationRepositoryImpl(
     private val translationDataStore: TranslationDataStore,
     private val translationAPI: TranslationAPI,
-    private val config: TranslationConfig
+    private val config: TranslationConfig,
 ) : TranslationRepository {
 
     private val translationCache = MutableStateFlow<Map<String, String>>(emptyMap())
@@ -58,7 +58,8 @@ class TranslationRepositoryImpl(
             return
         runCatching {
             val file = translationAPI.getTranslationFile().data.asJsonObject
-            val currentLanguage = translationDataStore.data().firstOrNull()?.currentLang?.takeUnless { it.isBlank() }
+            val currentLanguage =
+                translationDataStore.data().firstOrNull()?.currentLang?.takeUnless { it.isBlank() }
             val language = currentLanguage ?: config.initLanguage.code
             val translation = file.get(language)?.asJsonObject?.entrySet()?.associate { item ->
                 item.key to item.value.asString
@@ -78,14 +79,19 @@ class TranslationRepositoryImpl(
         }
     }
 
-    override suspend fun getLanguages(): Flow<List<TranslationLanguage>> {
+    override fun getLanguages(): Flow<List<TranslationLanguage>> {
         return translationDataStore.data().map { info ->
-            JsonParser.parseString(info.translation).asJsonObject.keySet().map { languageCode ->
-                TranslationLanguage.fromCode(
-                    code = languageCode,
-                    current = info.currentLang == languageCode
-                )
-            }
+            runCatching {
+                JsonParser.parseString(info.translation).asJsonObject.keySet().map { languageCode ->
+                    TranslationLanguage.fromCode(
+                        code = languageCode,
+                        current = info.currentLang == languageCode
+                    )
+                }
+            }.onFailure {
+                Log.e("MDKit-Translator", "Get Languages Error, parsing cached translation: $it")
+
+            }.getOrElse { emptyList<TranslationLanguage>() }
         }.distinctUntilChanged()
     }
 

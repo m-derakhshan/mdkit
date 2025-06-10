@@ -7,7 +7,7 @@ interface TranslationRepository {
     /**
      * @return A flow that emits a list of [TranslationLanguage] objects.
      */
-    suspend fun getLanguages(): Flow<List<TranslationLanguage>>
+    fun getLanguages(): Flow<List<TranslationLanguage>>
 
     /**
      * Retrieves the translation for the given key.

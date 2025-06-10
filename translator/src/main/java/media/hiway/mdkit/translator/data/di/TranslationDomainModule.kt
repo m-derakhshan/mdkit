@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import media.hiway.mdkit.translator.domain.repository.TranslationRepository
+import media.hiway.mdkit.translator.domain.use_case.GetCurrentLanguage
 import media.hiway.mdkit.translator.domain.use_case.GetLanguages
 import media.hiway.mdkit.translator.domain.use_case.GetTranslation
 import media.hiway.mdkit.translator.domain.use_case.Translator
@@ -33,7 +34,8 @@ object TranslationDomainModule {
         return Translator(
             getTranslation = GetTranslation(repository),
             getLanguages = GetLanguages(repository),
-            updateCurrentLanguage = UpdateCurrentLanguage(repository)
+            updateCurrentLanguage = UpdateCurrentLanguage(repository),
+            getCurrentLanguage = GetCurrentLanguage(repository)
         )
     }
 }
