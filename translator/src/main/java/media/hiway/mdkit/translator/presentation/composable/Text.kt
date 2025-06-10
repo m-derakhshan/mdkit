@@ -1,6 +1,5 @@
 package media.hiway.mdkit.translator.presentation.composable
 
-import android.util.Log
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +26,7 @@ import media.hiway.mdkit.translator.presentation.utils.TranslationEntryPoint
 @Composable
 fun Text(
     text: String,
+    staticText: String = "",
     keepCase: Boolean = false,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -70,7 +70,7 @@ fun Text(
                 is TextAppearance.LowerCase -> translatedText.lowercase()
                 is TextAppearance.MixedCase -> translatedText
             }
-        },
+        } + staticText,
         modifier = modifier,
         color = color,
         fontSize = fontSize,
