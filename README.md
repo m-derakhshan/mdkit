@@ -27,7 +27,7 @@ Then include the library in your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-       implementation("com.github.m-derakhshan:mdkit:1.1.0")
+       implementation("com.github.m-derakhshan:mdkit:$LATEST_VERSION")
 }
 ```
 
