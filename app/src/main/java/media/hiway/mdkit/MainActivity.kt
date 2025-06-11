@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.use_case.Translator
 import media.hiway.mdkit.translator.presentation.composable.Text
+import media.hiway.mdkit.translator.presentation.composable.translate
 import media.hiway.mdkit.ui.theme.MDKitTheme
 import javax.inject.Inject
 
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                             .safeContentPadding()
                     ) {
                         Text(text = "404-BUTTON".uppercase(), keepCase = true)
-                        Text(text = "404-TEXT")
+                        androidx.compose.material3.Text(text = "404-TEXT".translate().lowercase())
                         Text(text = "404-DESCRIPTION")
 
                         Button(
