@@ -42,7 +42,7 @@ Please check each module's folder to see how to set it up.
 
 This is part of the larger `mdkit` monorepo:
 
-* ✅ `mdkit-translator` – language translation support. It's designed for easy plug-and-play use within your project using [Hilt](https://dagger.dev/hilt/) for configuration.
+* ✅ [`mdkit-translator`](https://github.com/m-derakhshan/mdkit/tree/main/translator) – Application language translator.
 
 * ⏳ More coming soon...
 
