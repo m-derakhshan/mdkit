@@ -1,3 +1,5 @@
+## ⚙️ Configuration
+
 You **must** provide a `TranslationConfig` via Hilt:
 
 ```kotlin
@@ -33,3 +35,13 @@ object TranslationConfigModule {
 ## 🛠️ Usage
 
 After setting up the config, the library will handle translation syncing and caching. You can use the provided functions and view helpers in your project directly.
+
+Either use it normaly as Text:
+```kotlin
+import media.hiway.mdkit.translator.presentation.composable.Text
+Text(text = "404-BUTTON".uppercase(), keepCase = true)
+```
+Or use it as `String` extention function inside of a `composable`:
+```kotlin
+"word".translate()
+```
