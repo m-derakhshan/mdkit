@@ -83,16 +83,19 @@ class TranslationRepositoryImpl(
         return translationDataStore.data().map { info ->
             runCatching {
                 JsonParser.parseString(info.translation).asJsonObject.keySet().map { languageCode ->
-                    TranslationLanguage.fromCode(
-                        code = languageCode,
-                        current = info.currentLang == languageCode
-                    )
+                    TranslationLanguage.fromCode(code = languageCode)
                 }
             }.onFailure {
                 Log.e("MDKit-Translator", "Get Languages Error, parsing cached translation: $it")
 
             }.getOrElse { emptyList<TranslationLanguage>() }
         }.distinctUntilChanged()
+    }
+
+    override fun getCurrentLanguage(): Flow<TranslationLanguage> {
+        return translationDataStore.data().map {
+            TranslationLanguage.fromCode(it.currentLang)
+        }
     }
 
     override fun getTranslation(key: String): Flow<String> {

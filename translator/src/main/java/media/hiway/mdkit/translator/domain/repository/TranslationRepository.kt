@@ -9,6 +9,13 @@ interface TranslationRepository {
      */
     fun getLanguages(): Flow<List<TranslationLanguage>>
 
+
+    /**
+     * @return A flow that emits the current application [TranslationLanguage] objects.
+     */
+    fun getCurrentLanguage(): Flow<TranslationLanguage>
+
+
     /**
      * Retrieves the translation for the given key.
      *

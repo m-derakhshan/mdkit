@@ -1,21 +1,18 @@
 package media.hiway.mdkit.translator.domain.model
 
-sealed class TranslationLanguage(val code: String, open val current: Boolean) {
-    data class English(override val current: Boolean = true) :
-        TranslationLanguage(code = "en", current = current)
+sealed class TranslationLanguage(val code: String) {
+    data object English: TranslationLanguage(code = "en")
 
-    data class Italian(override val current: Boolean = true) :
-        TranslationLanguage(code = "it", current = current)
+    data object Italian: TranslationLanguage(code = "it")
 
-    data class Spanish(override val current: Boolean = true) :
-        TranslationLanguage(code = "es", current = current)
+    data object Spanish: TranslationLanguage(code = "es")
 
     companion object {
-        fun fromCode(code: String, current: Boolean): TranslationLanguage {
+        fun fromCode(code: String): TranslationLanguage {
             return when (code) {
-                "en" -> English(current = current)
-                "it" -> Italian(current = current)
-                "es" -> Spanish(current = current)
+                "en" -> English
+                "it" -> Italian
+                "es" -> Spanish
                 else -> throw IllegalArgumentException("Unknown language code: $code")
             }
         }
