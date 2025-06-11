@@ -2,7 +2,8 @@
 
 # 🧠 MDKit
 
-`MDKit` is a Kotlin Android library that provides the core functionality of the Hiway Media applications. It consists of different modules.
+`MDKit` is a Kotlin Android library that provides the core functionality of the Hiway Media applications. It consists of different modules. The purpose of this repo is not to provide
+other ppl usage of the library, but to give and receive idea about the application architecture, best practices and performance points.
 
 
 
@@ -32,7 +33,9 @@ dependencies {
 
 ---
 
+
 ## ⚙️ Configuration
+Please check each module's folder to see how to set it up.
 
 You **must** provide a `TranslationConfig` via Hilt:
 
@@ -76,7 +79,7 @@ After setting up the config, the library will handle translation syncing and cac
 
 This is part of the larger `mdkit` monorepo:
 
-* ✅ `mdkit-translator` – Automatic language translation support. It's designed for easy plug-and-play use within your project using [Hilt](https://dagger.dev/hilt/) for configuration.
+* ✅ `mdkit-translator` – language translation support. It's designed for easy plug-and-play use within your project using [Hilt](https://dagger.dev/hilt/) for configuration.
 
 * ⏳ More coming soon...
 
