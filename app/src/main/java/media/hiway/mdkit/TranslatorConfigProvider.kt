@@ -23,7 +23,7 @@ object TranslationConfigModule {
             override val syncPeriod: Duration
                 get() = 20.seconds
             override val initLanguage: TranslationLanguage
-                get() = TranslationLanguage.Spanish(current = true)
+                get() = TranslationLanguage.Spanish
         }
     }
 }

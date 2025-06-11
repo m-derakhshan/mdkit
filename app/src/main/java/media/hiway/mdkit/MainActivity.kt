@@ -55,9 +55,9 @@ class MainActivity : ComponentActivity() {
                                 scope.launch {
                                     translator.updateCurrentLanguage(
                                         if (toggle)
-                                            TranslationLanguage.English()
+                                            TranslationLanguage.English
                                         else
-                                            TranslationLanguage.Spanish()
+                                            TranslationLanguage.Spanish
                                     )
                                 }
                                 toggle = !toggle
