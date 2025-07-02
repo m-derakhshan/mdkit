@@ -26,7 +26,6 @@ import media.hiway.mdkit.translator.presentation.utils.TranslationEntryPoint
 @Composable
 fun Text(
     text: String,
-    staticText: String = "",
     keepCase: Boolean = false,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -70,7 +69,7 @@ fun Text(
                 is TextAppearance.LowerCase -> translatedText.lowercase()
                 is TextAppearance.MixedCase -> translatedText
             }
-        } + staticText,
+        },
         modifier = modifier,
         color = color,
         fontSize = fontSize,

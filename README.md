@@ -1,0 +1,49 @@
+[![](https://jitpack.io/v/m-derakhshan/mdkit.svg)](https://jitpack.io/#m-derakhshan/mdkit)
+
+# 🧠 MDKit
+
+`MDKit` is a Kotlin Android library that provides the core functionality of the Hiway Media applications. It consists of different modules. The purpose of this repo is not to provide
+other ppl usage of the library, but to give and receive idea about the application architecture, best practices and performance points.
+
+
+
+---
+
+## 📦 Installation
+
+Add JitPack to your `settings.gradle.kts` or `build.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+    }
+}
+````
+
+Then include the library in your `build.gradle.kts`:
+
+```kotlin
+dependencies {
+       implementation("com.github.m-derakhshan:mdkit:$LATEST_VERSION")
+}
+```
+
+---
+
+
+## ⚙️ Configuration
+Please check each module's folder to see how to set it up.
+
+
+## 📁 Modules
+
+This is part of the larger `mdkit` monorepo:
+
+* ✅ [`mdkit-translator`](https://github.com/m-derakhshan/mdkit/tree/main/translator) – Application language translator.
+
+* ⏳ More coming soon...
+
+---
