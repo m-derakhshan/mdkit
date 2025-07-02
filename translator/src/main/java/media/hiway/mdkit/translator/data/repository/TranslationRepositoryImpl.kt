@@ -90,7 +90,7 @@ class TranslationRepositoryImpl(
             }.onFailure {
                 Log.e("MDKit-Translator", "Get Languages Error, parsing cached translation: $it")
 
-            }.getOrElse { emptyList<TranslationLanguage>() }
+            }.getOrElse { emptyList() }
         }.distinctUntilChanged()
     }
 
