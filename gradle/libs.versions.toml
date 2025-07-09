@@ -36,7 +36,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 #--------------retrofit----------------
 squareup-retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "3.0.0" }
-squareup-okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0" }
+squareup-okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version = "5.1.0" }
 squareup-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version = "3.0.0" }
 #--------------retrofit----------------
 
