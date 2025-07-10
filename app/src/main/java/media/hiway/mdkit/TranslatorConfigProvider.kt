@@ -19,9 +19,9 @@ object TranslationConfigModule {
     fun provideTranslationConfig(): TranslationConfig {
         return object : TranslationConfig {
             override val baseUrl: String
-                get() ="https://api.supertennix.it/" //"https://sevillafc.es"
+                get() ="https://api.supertennix.it/"
             override val translationFilePath: String
-                get() = "api/v1/it/translation.json" //"api/translation/lang" //
+                get() = "api/v1/it/translation.json"
             override val syncPeriod: Duration
                 get() = 20.seconds
             override val initLanguage: TranslationLanguage
