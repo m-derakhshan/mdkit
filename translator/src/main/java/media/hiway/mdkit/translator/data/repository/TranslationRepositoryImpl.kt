@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -19,6 +20,7 @@ import media.hiway.mdkit.translator.data.data_source.remote.api.TranslationAPI
 import media.hiway.mdkit.translator.domain.model.TranslationConfig
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.repository.TranslationRepository
+import kotlin.time.Duration.Companion.seconds
 
 class TranslationRepositoryImpl(
     private val translationDataStore: TranslationDataStore,
@@ -28,6 +30,7 @@ class TranslationRepositoryImpl(
 
     private val translationCache = MutableStateFlow<Map<String, String>>(emptyMap())
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
 
     init {
         scope.launch {
@@ -53,15 +56,17 @@ class TranslationRepositoryImpl(
         }
     }
 
-    private suspend fun downloadTranslationFile() {
-        val lastUpdate = translationDataStore.data().firstOrNull()?.translationUpdatedAt ?: 0L
+    private suspend fun downloadTranslationFile(retry: Int = 0) {
+
+        val dataSnapshot = translationDataStore.data().firstOrNull()
+        val lastUpdate = dataSnapshot?.translationUpdatedAt ?: 0L
+
         if (System.currentTimeMillis() - lastUpdate < config.syncPeriod.inWholeMilliseconds)
             return
+
         runCatching {
-            val file =
-                translationAPI.getTranslationFile(path = config.translationFilePath).data.asJsonObject
-            val currentLanguage =
-                translationDataStore.data().firstOrNull()?.currentLang?.takeUnless { it.isBlank() }
+            val file = translationAPI.getTranslationFile(path = config.translationFilePath).data.asJsonObject
+            val currentLanguage = dataSnapshot?.currentLang?.takeUnless { it.isBlank() }
             val language = currentLanguage ?: config.initLanguage.code
             val translation = file.get(language)?.asJsonObject?.entrySet()?.associate { item ->
                 item.key.uppercase() to item.value.asString //! Convert keys to uppercase to maintain consistency
@@ -76,8 +81,19 @@ class TranslationRepositoryImpl(
             translationCache.update { translation }
             Log.i("MDKit-Translator", "Translation file updated successfully.")
         }.onFailure {
-            //todo: define a flexible retry policy
-            Log.i("MDKit-Translator", "fetchTranslationFileFromServer: Error: ${it.message}")
+            Log.i(
+                "MDKit-Translator",
+                "fetchTranslationFileFromServer: Error: ${it.message}. $retry retry."
+            )
+            delay(1.seconds)
+            if (retry < 3) {
+                downloadTranslationFile(retry + 1)
+            } else {
+                Log.e(
+                    "MDKit-Translator",
+                    "Failed to fetch translation file after multiple attempts: $it"
+                )
+            }
         }
     }
 

@@ -8,6 +8,6 @@ import retrofit2.http.Path
 interface TranslationAPI {
     @GET("{path}")
     suspend fun getTranslationFile(
-        @Path("path") path: String
+        @Path("path", encoded = true) path: String
     ): TranslationFileServerResponse
 }
