@@ -20,6 +20,8 @@ object TranslationConfigModule {
         return object : TranslationConfig {
             override val baseUrl: String
                 get() = "https://tv.sevillafc.es/"
+            override val translationFilePath: String
+                get() = "api/translation/lang"
             override val syncPeriod: Duration
                 get() = 20.seconds
             override val initLanguage: TranslationLanguage

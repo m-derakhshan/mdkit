@@ -58,7 +58,8 @@ class TranslationRepositoryImpl(
         if (System.currentTimeMillis() - lastUpdate < config.syncPeriod.inWholeMilliseconds)
             return
         runCatching {
-            val file = translationAPI.getTranslationFile().data.asJsonObject
+            val file =
+                translationAPI.getTranslationFile(path = config.translationFilePath).data.asJsonObject
             val currentLanguage =
                 translationDataStore.data().firstOrNull()?.currentLang?.takeUnless { it.isBlank() }
             val language = currentLanguage ?: config.initLanguage.code
