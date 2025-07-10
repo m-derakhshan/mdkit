@@ -3,32 +3,41 @@
 You **must** provide a `TranslationConfig` via Hilt:
 
 ```kotlin
-@Module
 @InstallIn(SingletonComponent::class)
 object TranslationConfigModule {
-
     @Provides
     @Singleton
     fun provideTranslationConfig(): TranslationConfig {
         return object : TranslationConfig {
             override val baseUrl: String
-                get() = "https://your-api-base-url.com"
-
+                get() ="BASE URL"
+            override val translationFilePath: String
+                get() = "PATH"
             override val syncPeriod: Duration
                 get() = 1.days
-
             override val initLanguage: TranslationLanguage
-                get() = TranslationLanguage.English()
+                get() = TranslationLanguage.Spanish
+            override val useLegacy: Boolean
+                get() = true
         }
     }
 }
 ```
 
-> 🧩 `baseUrl` should point to your translation backend.
->
-> 🔁 `syncPeriod` controls how frequently translations sync.
->
-> 🌐 `initLanguage` sets the default app language.
+### 📝 TranslationConfig Parameters
+
+- `baseUrl`: Base URL for the translation service.
+
+- `translationFilePath`: Path to the translation file, used in Retrofit GET requests.
+
+- `syncPeriod`: Duration after which the translation should be synchronized.
+
+- `initLanguage`: The initial language used for translations.
+
+- `useLegacy`: Indicates whether to use the legacy API for fetching translation files.  
+  Default is `false`, meaning the new API will be used.  
+  _Note: This parameter is temporary and will be removed in future versions._
+
 
 ---
 
