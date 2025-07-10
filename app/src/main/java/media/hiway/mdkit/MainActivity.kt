@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .safeContentPadding()
                     ) {
-                        Text(text = "404-BUTTON".uppercase(), keepCase = true)
+                        Text(text = "404-BUTTON-1".uppercase(), keepCase = true)
                         androidx.compose.material3.Text(text = "404-TEXT".translate().lowercase())
                         Text(text = "404-DESCRIPTION")
 

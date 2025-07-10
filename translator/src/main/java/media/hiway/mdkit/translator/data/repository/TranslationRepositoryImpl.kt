@@ -1,6 +1,7 @@
 package media.hiway.mdkit.translator.data.repository
 
 import android.util.Log
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,12 +66,20 @@ class TranslationRepositoryImpl(
             return
 
         runCatching {
-            val file = translationAPI.getTranslationFile(path = config.translationFilePath).data.asJsonObject
+
+            val file: JsonObject = if (config.useLegacy)
+                JsonObject().apply {
+                    add(config.initLanguage.code, translationAPI.getTranslationFileLegacy(path = config.translationFilePath))
+                }
+            else
+                translationAPI.getTranslationFile(path = config.translationFilePath).data.asJsonObject
+
             val currentLanguage = dataSnapshot?.currentLang?.takeUnless { it.isBlank() }
             val language = currentLanguage ?: config.initLanguage.code
             val translation = file.get(language)?.asJsonObject?.entrySet()?.associate { item ->
                 item.key.uppercase() to item.value.asString //! Convert keys to uppercase to maintain consistency
             } ?: emptyMap()
+
             translationDataStore.updateData { translation ->
                 translation.copy(
                     translation = file.toString(),
@@ -79,6 +88,7 @@ class TranslationRepositoryImpl(
                 )
             }
             translationCache.update { translation }
+
             Log.i("MDKit-Translator", "Translation file updated successfully.")
         }.onFailure {
             Log.i(

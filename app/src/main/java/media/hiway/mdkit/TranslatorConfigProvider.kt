@@ -19,13 +19,15 @@ object TranslationConfigModule {
     fun provideTranslationConfig(): TranslationConfig {
         return object : TranslationConfig {
             override val baseUrl: String
-                get() = "https://api.supertennix.it/"
+                get() ="https://api.supertennix.it/" //"https://sevillafc.es"
             override val translationFilePath: String
-                get() = "api/v1/it/translation.json"
+                get() = "api/v1/it/translation.json" //"api/translation/lang" //
             override val syncPeriod: Duration
                 get() = 20.seconds
             override val initLanguage: TranslationLanguage
                 get() = TranslationLanguage.Spanish
+            override val useLegacy: Boolean
+                get() = true
         }
     }
 }

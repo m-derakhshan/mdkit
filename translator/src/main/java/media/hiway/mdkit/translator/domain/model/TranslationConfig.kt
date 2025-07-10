@@ -23,4 +23,13 @@ interface TranslationConfig {
      * The language used for the initial translation.
      */
     val initLanguage: TranslationLanguage
+
+
+    /**
+     * Indicates whether to use the legacy API for fetching translation files.
+     * Default is false, meaning the new API will be used.
+     * later, this parameters will be removed.
+     */
+    val useLegacy: Boolean
+        get() = false
 }
