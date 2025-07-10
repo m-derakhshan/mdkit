@@ -13,7 +13,7 @@ import retrofit2.http.QueryMap
 internal interface ContentApi {
 
 
-    @GET("page/{path}")
+    @GET("{path}")
     suspend fun getContent(
         @Path("path", encoded = true) path: String,
         @QueryMap(encoded = true) query: Map<String, String>,
@@ -21,21 +21,23 @@ internal interface ContentApi {
 
 
     @FormUrlEncoded
-    @POST("api/v2/subscription/authorize")
+    @POST("{path}")
     suspend fun authorizeStream(
+        @Path("path", encoded = true) path: String,
         @Header("Authorization") accessToken: String,
         @Header("User-Agent") userAgent: String = System.getProperty("http.agent") ?: "",
-        @Field("id") contentId: String
+        @Field("id") contentId: String,
     )
 
 
     @FormUrlEncoded
-    @POST("api/v2/media/unprotect")
+    @POST("{path}")
     suspend fun unprotectStream(
+        @Path("path", encoded = true) path: String,
         @Header("Authorization") accessToken: String,
         @Header("User-Agent") userAgent: String = System.getProperty("http.agent") ?: "",
         @Field("key") contentKey: String,
-        @Field("secret_key") secretKey: String
+        @Field("secret_key") secretKey: String,
     )
 
 
