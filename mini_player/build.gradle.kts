@@ -3,14 +3,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.devtools.ksp)
-    id("org.jetbrains.kotlin.plugin.serialization")
-    alias(libs.plugins.dagger.hilt.android.plugin)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "media.hiway.mdkit.translator"
+    namespace = "media.hiway.mdkit.mini_player"
     compileSdk = 36
 
     defaultConfig {
@@ -34,16 +30,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildFeatures {
-        compose = true
-    }
 }
+
 
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
     }
 }
+
 
 dependencies {
 
@@ -53,24 +48,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.material3)
-}
-
-
-
-dependencies {
-    implementation(libs.squareup.gson)
-    implementation(libs.squareup.okhttp3)
-    implementation(libs.squareup.retrofit2)
-
-    implementation(libs.androidx.datastore)
-    implementation(libs.jetbrains.kotlin.seralization)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
-
-    implementation(libs.google.dagger.hilt.android)
-    ksp(libs.google.dagger.hilt.android.compiler)
-
 }
