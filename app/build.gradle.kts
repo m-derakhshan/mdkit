@@ -33,8 +33,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -44,7 +44,7 @@ android {
 
 kotlin{
     compilerOptions {
-        jvmTarget = JvmTarget.fromTarget("11")
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
@@ -70,7 +70,12 @@ dependencies {
 
 dependencies{
     implementation(project(":translator"))
+    implementation(project(":floating_view"))
+
+
+
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
 }
 

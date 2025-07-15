@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "MDKit"
 include(":app")
 include(":translator")
+include(":floating_view")

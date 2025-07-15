@@ -3,14 +3,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.devtools.ksp)
-    id("org.jetbrains.kotlin.plugin.serialization")
-    alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.dagger.hilt.android.plugin)
+    alias(libs.plugins.google.devtools.ksp)
+
 }
 
 android {
-    namespace = "media.hiway.mdkit.translator"
+    namespace = "media.hiway.mdkit.floating_view"
     compileSdk = 36
 
     defaultConfig {
@@ -37,7 +38,9 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
+
 
 kotlin {
     compilerOptions {
@@ -45,32 +48,29 @@ kotlin {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.material3)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-
-
-dependencies {
-    implementation(libs.squareup.gson)
-    implementation(libs.squareup.okhttp3)
-    implementation(libs.squareup.retrofit2)
-
-    implementation(libs.androidx.datastore)
-    implementation(libs.jetbrains.kotlin.seralization)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
-
+dependencies{
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
 
 }
