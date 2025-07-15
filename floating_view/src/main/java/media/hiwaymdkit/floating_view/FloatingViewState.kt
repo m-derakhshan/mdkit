@@ -10,11 +10,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 
 @HiltViewModel
-class FloatingViewState @Inject internal constructor() : ViewModel(){
+class FloatingViewState @Inject constructor() : ViewModel() {
 
     private val _viewOffset = mutableStateOf(IntSize.Zero)
     internal val viewOffset: State<IntSize> = _viewOffset
@@ -25,14 +24,16 @@ class FloatingViewState @Inject internal constructor() : ViewModel(){
     private val _currentStatus = mutableStateOf<FloatingViewStatus>(FloatingViewStatus.Closed)
     val currentStatus: State<FloatingViewStatus> = _currentStatus
 
-    private var freeDrag: Boolean = false
-
     var enableUserInteraction: Boolean = true
 
+    private var viewPosition: ViewPosition = ViewPosition.TopLeft
+        set(value) {
+            field = value
+            computeOffset(position = value)
+        }
 
 
     fun open() {
-        freeDrag = false
         _currentStatus.value = FloatingViewStatus.Opened
         _viewOffset.value = IntSize.Zero
     }
@@ -52,50 +53,43 @@ class FloatingViewState @Inject internal constructor() : ViewModel(){
     }
 
     internal fun updateScreenSize(size: IntSize) {
-
-        val oldAvailableX = (viewSize.width - contentSize.width).coerceAtLeast(0)
-        val oldAvailableY = (viewSize.height - contentSize.height).coerceAtLeast(0)
-
-
-        val ratioX = if (oldAvailableX > 0)
-            viewOffset.value.width.toFloat() / oldAvailableX
-        else 0f
-        val ratioY = if (oldAvailableY > 0)
-            viewOffset.value.height.toFloat() / oldAvailableY
-        else 0f
-
-
-        val newAvailableX = (size.width - contentSize.width).coerceAtLeast(0)
-        val newAvailableY = (size.height - contentSize.height).coerceAtLeast(0)
-
-        val newOffsetX = (newAvailableX * ratioX).roundToInt().coerceIn(0, newAvailableX)
-        val newOffsetY = (newAvailableY * ratioY).roundToInt().coerceIn(0, newAvailableY)
-
-        _viewOffset.value =
-            if (viewSize.height == 0 && viewSize.height == viewOffset.value.height)
-                IntSize(0, size.height) else IntSize(newOffsetX, newOffsetY)
-
         viewSize = size
-
-
+        if (currentStatus.value == FloatingViewStatus.Closed) {
+            _viewOffset.value = IntSize(0, size.height)
+            return
+        }
+        computeOffset(position = viewPosition)
     }
 
     internal fun onDrag(offset: Offset) {
         if (enableUserInteraction.not()) return
 
         val oldOffset = viewOffset.value
+
         val maxWidthOffset = viewSize.width - contentSize.width
         val maxHeightOffset =
             if (currentStatus.value == FloatingViewStatus.Minimized) viewSize.height - contentSize.height else viewSize.height
+
+
         val newOffset = IntSize(
-            width = ((oldOffset.width + offset.x).toInt()).coerceIn(
-                minimumValue = 0,
-                maximumValue = maxWidthOffset
-            ),
-            height = ((oldOffset.height + offset.y).toInt()).coerceIn(
-                minimumValue = 0,
-                maximumValue = maxHeightOffset
-            )
+            width = with((oldOffset.width + offset.x).toInt()) {
+                if (currentStatus.value != FloatingViewStatus.Minimized)
+                    coerceIn(
+                        minimumValue = 0,
+                        maximumValue = maxWidthOffset
+                    )
+                else
+                    this
+            },
+            height = with((oldOffset.height + offset.y).toInt()) {
+                if (currentStatus.value != FloatingViewStatus.Minimized)
+                    coerceIn(
+                        minimumValue = 0,
+                        maximumValue = maxHeightOffset
+                    )
+                else
+                    this
+            }
         )
         _viewOffset.value = newOffset
         if (newOffset.height > viewSize.height / 5)
@@ -103,19 +97,40 @@ class FloatingViewState @Inject internal constructor() : ViewModel(){
     }
 
     internal fun onUpdateYOffsetFinish() {
-        if (freeDrag) return
 
-        if (viewOffset.value.height <= viewSize.height / 5) {
-            open()
+        val x = viewOffset.value.width
+        val y = viewOffset.value.height
+        val width = viewSize.width - contentSize.width
+        val height = viewSize.height - contentSize.height
+
+        viewPosition = if (x < width / 2) {
+            if (y < height / 2) {
+                ViewPosition.TopLeft
+            } else
+                ViewPosition.BottomLeft
         } else {
-            _viewOffset.value = IntSize(
-                width = viewSize.width - contentSize.width,
-                height = viewSize.height - contentSize.height
-            )
-            freeDrag = true
+            if (y < height / 2) {
+                ViewPosition.TopRight
+            } else
+                ViewPosition.BottomRight
         }
 
     }
 
+    private fun computeOffset(position: ViewPosition) {
+        when (position) {
+            ViewPosition.TopLeft -> _viewOffset.value = IntSize(0, 0)
+            ViewPosition.TopRight -> _viewOffset.value =
+                IntSize(viewSize.width - contentSize.width, 0)
+
+            ViewPosition.BottomLeft -> _viewOffset.value =
+                IntSize(0, viewSize.height - contentSize.height)
+
+            ViewPosition.BottomRight -> _viewOffset.value = IntSize(
+                viewSize.width - contentSize.width,
+                viewSize.height - contentSize.height
+            )
+        }
+    }
 
 }

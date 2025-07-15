@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
@@ -36,7 +35,6 @@ import media.hiway.mdkit.translator.presentation.composable.Text
 import media.hiway.mdkit.translator.presentation.composable.translate
 import media.hiway.mdkit.ui.theme.MDKitTheme
 import media.hiwaymdkit.floating_view.FloatingView
-import media.hiwaymdkit.floating_view.FloatingViewState
 import media.hiwaymdkit.floating_view.FloatingViewStatus
 import media.hiwaymdkit.floating_view.rememberFloatingViewState
 import javax.inject.Inject
@@ -54,9 +52,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MDKitTheme {
 
-                val floatingViewState2: FloatingViewState = hiltViewModel<FloatingViewState>()
                 val floatingViewState = rememberFloatingViewState()
-
 
 
                 Box {
@@ -91,9 +87,6 @@ class MainActivity : ComponentActivity() {
                             ) { }
                         }
                     }
-
-
-
 
                     Button(onClick = { floatingViewState.open() }) {
                         Text("open")
