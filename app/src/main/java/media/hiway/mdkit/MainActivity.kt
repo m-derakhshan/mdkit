@@ -83,6 +83,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     toggle = !toggle
+                                    floatingViewState.isMinimizable  = !floatingViewState.isMinimizable
                                 }
                             ) { }
                         }

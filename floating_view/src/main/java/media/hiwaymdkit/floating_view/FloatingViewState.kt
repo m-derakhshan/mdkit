@@ -27,6 +27,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
     val currentStatus: State<FloatingViewStatus> = _currentStatus
 
     var enableUserInteraction: Boolean = true
+    var isMinimizable: Boolean = true
 
     private var viewPosition: ViewPosition = ViewPosition.TopLeft
         set(value) {
@@ -100,7 +101,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
             }
         )
         _viewOffset.value = newOffset
-        if (newOffset.height > viewSize.height / 5)
+        if (isMinimizable && newOffset.height > viewSize.height / 5)
             minimize()
     }
 
@@ -110,6 +111,11 @@ class FloatingViewState @Inject constructor() : ViewModel() {
         val y = viewOffset.value.height
         val width = viewSize.width - contentSize.width
         val height = viewSize.height - contentSize.height
+
+        if (isMinimizable.not() && y >= viewSize.height/2){
+            close()
+            return
+        }
 
         viewPosition = if (x < width / 2) {
             if (y < height / 2) {
