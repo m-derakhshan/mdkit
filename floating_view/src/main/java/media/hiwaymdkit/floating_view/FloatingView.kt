@@ -1,7 +1,12 @@
 package media.hiwaymdkit.floating_view
 
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.wrapContentSize
@@ -20,7 +25,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 @Composable
 fun BoxScope.FloatingView(
     state: FloatingViewState,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
 
     val screenSize = LocalWindowInfo.current.containerSize
@@ -30,8 +35,8 @@ fun BoxScope.FloatingView(
         state.updateScreenSize(size = screenSize)
     }
 
-    val x by animateIntAsState(screenOffset.width)
-    val y by animateIntAsState(screenOffset.height)
+    val x by animateIntAsState(screenOffset.width, animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
+    val y by animateIntAsState(screenOffset.height, animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing))
 
 
     Surface(

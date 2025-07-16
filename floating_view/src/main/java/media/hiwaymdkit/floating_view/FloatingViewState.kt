@@ -7,9 +7,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 
 @HiltViewModel
@@ -21,7 +23,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
     private var viewSize: IntSize = IntSize.Zero
     internal var contentSize: IntSize = IntSize.Zero
 
-    private val _currentStatus = mutableStateOf<FloatingViewStatus>(FloatingViewStatus.Closed)
+    private val _currentStatus = mutableStateOf<FloatingViewStatus>(FloatingViewStatus.Closing)
     val currentStatus: State<FloatingViewStatus> = _currentStatus
 
     var enableUserInteraction: Boolean = true
@@ -32,6 +34,12 @@ class FloatingViewState @Inject constructor() : ViewModel() {
             computeOffset(position = value)
         }
 
+    init {
+        viewModelScope.launch(Dispatchers.Unconfined) {
+            delay(500)
+            close()
+        }
+    }
 
     fun open() {
         _currentStatus.value = FloatingViewStatus.Opened
