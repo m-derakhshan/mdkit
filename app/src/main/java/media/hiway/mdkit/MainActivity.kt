@@ -9,10 +9,12 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -83,7 +85,8 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     toggle = !toggle
-                                    floatingViewState.isMinimizable  = !floatingViewState.isMinimizable
+                                    floatingViewState.isMinimizable =
+                                        !floatingViewState.isMinimizable
                                 }
                             ) { }
                         }
@@ -114,9 +117,12 @@ class MainActivity : ComponentActivity() {
                                     Button(onClick = { floatingViewState.close() }) {
                                         Text("close")
                                     }
+                                    Button(onClick = { floatingViewState.minimize() }) {
+                                        Text("minimized")
+                                    }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.padding(WindowInsets.safeContent.asPaddingValues()))
                         }
                     }
                 }

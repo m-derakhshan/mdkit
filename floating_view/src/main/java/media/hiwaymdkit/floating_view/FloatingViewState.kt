@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 
 @HiltViewModel
@@ -56,9 +55,13 @@ class FloatingViewState @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun minimize() {
+    fun minimize() {
         _currentStatus.value = FloatingViewStatus.Minimized
-
+        onDrag(offset = Offset(0f, (viewSize.height.toFloat()/2) +1))
+        viewModelScope.launch {
+            delay(50)
+            onUpdateYOffsetFinish()
+        }
     }
 
     internal fun updateScreenSize(size: IntSize) {
@@ -102,7 +105,8 @@ class FloatingViewState @Inject constructor() : ViewModel() {
         )
         _viewOffset.value = newOffset
         if (isMinimizable && newOffset.height > viewSize.height / 5)
-            minimize()
+            _currentStatus.value = FloatingViewStatus.Minimized
+
     }
 
     internal fun onUpdateYOffsetFinish() {
@@ -112,7 +116,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
         val width = viewSize.width - contentSize.width
         val height = viewSize.height - contentSize.height
 
-        if (isMinimizable.not() && y >= viewSize.height/2){
+        if (isMinimizable.not() && y >= viewSize.height / 2) {
             close()
             return
         }
