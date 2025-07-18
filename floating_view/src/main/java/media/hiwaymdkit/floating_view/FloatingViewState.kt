@@ -36,7 +36,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.Unconfined) {
-            delay(500)
+            delay(300)
             close()
         }
     }
