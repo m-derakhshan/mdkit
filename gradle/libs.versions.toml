@@ -57,6 +57,11 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 #-------------------- Dagger hilt --------------------
 
 
+#--------------theo player for floating view example ----------------
+theoplayer-core = { group = "com.theoplayer.theoplayer-sdk-android", name = "core", version = "9.8.2" }
+theoplayer-ui = { group = "com.theoplayer.android-ui", name = "android-ui", version = "1.11.0" }
+#--------------theo player for floating view example ----------------
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

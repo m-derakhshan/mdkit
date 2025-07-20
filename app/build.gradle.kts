@@ -71,11 +71,15 @@ dependencies {
 dependencies{
     implementation(project(":translator"))
     implementation(project(":floating_view"))
+}
 
-
-
+dependencies{
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
 }
 
+dependencies{
+    implementation(libs.theoplayer.ui)
+    implementation(libs.theoplayer.core)
+}
