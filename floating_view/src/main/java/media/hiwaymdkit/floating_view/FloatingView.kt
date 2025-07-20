@@ -60,7 +60,7 @@ fun BoxScope.FloatingView(
             },
         color = Color.Transparent
     ) {
-        if (state.currentStatus.value != FloatingViewStatus.Closing)
+        if (state.currentStatus.value != FloatingViewStatus.Closed)
             content()
     }
 }

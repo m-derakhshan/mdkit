@@ -22,7 +22,7 @@ class FloatingViewState @Inject constructor() : ViewModel() {
     private var viewSize: IntSize = IntSize.Zero
     internal var contentSize: IntSize = IntSize.Zero
 
-    private val _currentStatus = mutableStateOf<FloatingViewStatus>(FloatingViewStatus.Closing)
+    private val _currentStatus = mutableStateOf<FloatingViewStatus>(FloatingViewStatus.Closed)
     val currentStatus: State<FloatingViewStatus> = _currentStatus
 
     var enableUserInteraction: Boolean = true
@@ -47,12 +47,8 @@ class FloatingViewState @Inject constructor() : ViewModel() {
     }
 
     fun close() {
-        _currentStatus.value = FloatingViewStatus.Closing
+        _currentStatus.value = FloatingViewStatus.Closed
         _viewOffset.value = IntSize(0, viewSize.height)
-        viewModelScope.launch {
-            delay(300)
-            _currentStatus.value = FloatingViewStatus.Closed
-        }
     }
 
     fun minimize() {
