@@ -43,7 +43,7 @@ Please check each module's folder to see how to set it up.
 This is part of the larger `mdkit` monorepo:
 
 * ✅ [`mdkit-translator`](https://github.com/m-derakhshan/mdkit/tree/main/translator) – Application language translator.
-* ✅ [`mdkit-floating view`](https://github.com/m-derakhshan/mdkit/tree/main/translator) – A Minimizable view.
+* ✅ [`mdkit-floating view`]([https://github.com/m-derakhshan/mdkit/tree/main/translator](https://github.com/m-derakhshan/mdkit/tree/main/floating_view)) – A Minimizable view.
 * ⏳ More coming soon...
 
 ---
