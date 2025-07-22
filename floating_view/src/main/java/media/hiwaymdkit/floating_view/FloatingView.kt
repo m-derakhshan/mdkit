@@ -29,7 +29,7 @@ fun BoxScope.FloatingView(
     val screenSize = LocalWindowInfo.current.containerSize
     val screenOffset by state.viewOffset
 
-    LaunchedEffect(true) {
+    LaunchedEffect(screenSize) {
         state.updateScreenSize(size = screenSize)
     }
 
