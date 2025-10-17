@@ -1,4 +1,6 @@
 package media.hiwaymdkit.floating_view
+
+
 internal sealed interface ViewPosition{
     data object TopLeft: ViewPosition
     data object TopRight : ViewPosition

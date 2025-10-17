@@ -42,31 +42,32 @@ fun BoxScope.FloatingView(
         animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
     )
 
-        Surface(
-            modifier = Modifier
-                .graphicsLayer {
-                    translationX = x.toFloat()
-                    translationY = y.toFloat()
-                }
-                .onSizeChanged {
-                    state.contentSize = it
-                }.then(modifier),
-            color = Color.Transparent
-        ) {
-            if (state.currentStatus.value != FloatingViewStatus.Closed)
-                Box(modifier = Modifier.pointerInput(Unit) {
-                    detectDragGestures(
-                        onDrag = { pointer, offset ->
-                            pointer.consume()
-                            state.onDrag(offset = offset)
-                        },
-                        onDragEnd = {
-                            state.onUpdateYOffsetFinish()
-                        }
-                    )
-                }) {
-                    content()
-                }
-        }
+    Surface(
+        modifier = Modifier
+            .graphicsLayer {
+                translationX = x.toFloat()
+                translationY = y.toFloat()
+            }
+            .onSizeChanged {
+                state.contentSize = it
+            }
+            .then(modifier),
+        color = Color.Transparent
+    ) {
+        if (state.currentStatus.value != FloatingViewStatus.Closed)
+            Box(modifier = Modifier.pointerInput(Unit) {
+                detectDragGestures(
+                    onDrag = { pointer, offset ->
+                        pointer.consume()
+                        state.onDrag(offset = offset)
+                    },
+                    onDragEnd = {
+                        state.onUpdateYOffsetFinish()
+                    }
+                )
+            }) {
+                content()
+            }
+    }
 
 }
