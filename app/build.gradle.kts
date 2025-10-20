@@ -71,6 +71,7 @@ dependencies {
 dependencies{
     implementation(project(":translator"))
     implementation(project(":floating_view"))
+    implementation(project(":permission"))
 
 
 

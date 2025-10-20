@@ -10,16 +10,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import media.hiway.mdkit.permission.data.data_source.local.PermissionDataStore
 import media.hiway.mdkit.permission.domain.model.PermissionModel
 import media.hiway.mdkit.permission.presentation.state.PermissionHandlerState
-import media.hiway.mdkit.permission.presentation.state.PermissionState
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = PermissionViewModel.Factory::class)
 internal class PermissionViewModel @AssistedInject constructor(
     private val permissionDataStore: DataStore<PermissionDataStore>,
     @Assisted private val permissions: List<PermissionModel>,
@@ -31,25 +29,21 @@ internal class PermissionViewModel @AssistedInject constructor(
         fun create(maxRequest: Int, permissions: List<PermissionModel>): PermissionViewModel
     }
 
-
-    private var startPermissionRequest = 0L
-    private var endPermissionRequest = 0L
-
-
     private val _innerState = MutableStateFlow(PermissionHandlerState())
     val innerState = _innerState.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val requestCounterPermissions = permissionDataStore.data.first()
-            withContext(Dispatchers.Main) {
-                _innerState.update {
-                    it.copy(
-                        permissions = permissions.filter { permission ->
-                            (requestCounterPermissions.requestedCounter[permission.permission]
-                                ?: 0) <= maxRequest
-                        }.map { item -> item.permission },
-                    )
+            viewModelScope.launch {
+                permissionDataStore.data.collectLatest { dataStore ->
+                    _innerState.update {
+                        it.copy(
+                            permissions = permissions.filter { permission ->
+                                (dataStore.requestedCounter[permission.permission]
+                                    ?: 0) <= maxRequest
+                            }.map { item -> item.permission },
+                        )
+                    }
                 }
             }
         }
@@ -70,47 +64,23 @@ internal class PermissionViewModel @AssistedInject constructor(
                 }
             }
         }
-        endPermissionRequest = System.currentTimeMillis()
         val notGrantedPermissions =
             permissions.filter { it.permission in result.filter { permission -> permission.value.not() } }
         if (notGrantedPermissions.isEmpty())
             onConsumeRational()
         else {
-            _innerState.update { state -> state.copy(permissions = notGrantedPermissions.map { it.permission }) }
-            if (endPermissionRequest - startPermissionRequest < 300) {
-                _innerState.update {
-                    it.copy(navigateToSetting = true)
-                }
-            } else
-                _innerState.update { state ->
-                    state.copy(
-                        showRational = notGrantedPermissions.isNotEmpty() || result.isEmpty(),
-                        rationals = notGrantedPermissions.map { it.rational }
-                    )
-                }
-        }
-    }
-
-    fun onAskPermission() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val requestCounterPermissions = permissionDataStore.data.first()
-            withContext(Dispatchers.Main) {
-                _innerState.update {
-                    it.copy(
-                        permissions = permissions.filter { permission ->
-                            (requestCounterPermissions.requestedCounter[permission.permission]
-                                ?: 0) <= maxRequest
-                        }.map { item -> item.permission },
-                        askPermission = true
-                    )
-                }
+            _innerState.update { state ->
+                state.copy(
+                    permissions = notGrantedPermissions.map { it.permission },
+                    showRational = notGrantedPermissions.isNotEmpty() || result.isEmpty(),
+                    rationals = notGrantedPermissions.map { it.rational }
+                )
             }
         }
     }
 
-    fun onGrantPermissionButton() {
-        _innerState.update { it.copy(askPermission = true) }
-        startPermissionRequest = System.currentTimeMillis()
+    fun onAskPermission() {
+        _innerState.update { it.copy(askPermission = true, navigateToSetting = it.showRational) }
     }
 
     fun onPermissionRequested() {
@@ -125,7 +95,11 @@ internal class PermissionViewModel @AssistedInject constructor(
 
     fun onConsumeRational() {
         _innerState.update {
-            it.copy(showRational = false)
+            it.copy(
+                showRational = false,
+                askPermission = false,
+                navigateToSetting = false,
+            )
         }
     }
 

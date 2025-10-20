@@ -1,6 +1,7 @@
 package media.hiway.mdkit
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,8 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import media.hiway.mdkit.permission.domain.model.PermissionModel
+import media.hiway.mdkit.permission.presentation.composable.PermissionHandler
+import media.hiway.mdkit.permission.presentation.state.rememberPermissionState
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.use_case.Translator
 import media.hiway.mdkit.translator.presentation.composable.Text
@@ -50,11 +57,48 @@ class MainActivity : ComponentActivity() {
         setContent {
             MDKitTheme {
 
+                //----------------- Permission Handler ----------------//
+                val permissionState = rememberPermissionState(
+                    maxRequest = 2,
+                    permissions = listOf(
+                        PermissionModel(
+                            permission = "android.permission.CAMERA",
+                            maxSDKVersion = Int.MAX_VALUE,
+                            minSDKVersion = 21,
+                            rational = "We need camera permission to take pictures",
+                        )
+                    )
+                )
+
+                PermissionHandler(
+                    state = permissionState
+                )
+                { rationals ->
+                    AlertDialog(
+                        onDismissRequest = {
+                            permissionState.onConsumeRational()
+                        },
+                        title = {
+                            Text("Give permission")
+                        },
+                        text = {
+                            Text(rationals.joinToString { it })
+                        },
+                        confirmButton = {
+                            Button(onClick = {
+                                permissionState.askPermission()
+                            }) {
+                                Text("Give permission mf")
+                            }
+                        }
+                    )
+                }
+
+                //----------------- Permission Handler ----------------//
+
+
                 val floatingViewState = rememberFloatingViewState()
-
-
                 Box {
-
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         var toggle by remember { mutableStateOf(false) }
                         val scope = rememberCoroutineScope()
@@ -64,6 +108,7 @@ class MainActivity : ComponentActivity() {
                                 .padding(innerPadding)
                                 .safeContentPadding()
                         ) {
+
                             Text(text = "404-BUTTON-1".uppercase(), keepCase = true)
                             androidx.compose.material3.Text(
                                 text = "404-TEXT".translate().lowercase()
@@ -87,7 +132,6 @@ class MainActivity : ComponentActivity() {
                             ) { }
                         }
                     }
-
                     Button(onClick = { floatingViewState.open() }) {
                         Text("open")
                     }
@@ -119,6 +163,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
+                    }
+
+
+                    Button(
+                        modifier = Modifier.padding(top = 300.dp),
+                        onClick = { permissionState.askPermission() }) {
+                        Text("show permission dialog")
                     }
                 }
             }

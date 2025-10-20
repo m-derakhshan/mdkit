@@ -9,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import media.hiway.mdkit.permission.presentation.state.PermissionState
 
@@ -17,10 +16,10 @@ import media.hiway.mdkit.permission.presentation.state.PermissionState
 @Composable
 fun PermissionHandler(
     state: PermissionState,
-    rationalDialog: @Composable () -> Unit,
+    rationalDialog: @Composable (rationals: List<String>) -> Unit,
 ) {
     val activity = LocalActivity.current as Activity
-    val askPermission by state.askPermission
+
 
     val innerState = state.permissionHelper.innerState.collectAsStateWithLifecycle().value
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -30,13 +29,9 @@ fun PermissionHandler(
         }
     )
 
-    LaunchedEffect(key1 = askPermission) {
-        if (askPermission)
-            state.permissionHelper.onAskPermission()
-    }
 
-    LaunchedEffect(key1 = innerState.askPermission, block = {
-        if (innerState.askPermission)
+    LaunchedEffect(key1 = innerState.askPermission,innerState.permissions, block = {
+        if (innerState.askPermission && innerState.permissions.isNotEmpty())
             permissionLauncher.launch(innerState.permissions.toTypedArray())
     })
 
@@ -52,6 +47,7 @@ fun PermissionHandler(
         }
     })
 
-    rationalDialog()
+    if (innerState.showRational)
+        rationalDialog(innerState.rationals)
 
 }
