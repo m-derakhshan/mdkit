@@ -17,6 +17,10 @@ val permissionState = rememberPermissionState(
     )
 )
 
+LaunchedEffect(true) {
+    permissionState.askPermission()
+}
+
 PermissionHandler(state = permissionState){ rationals ->
    AlertDialog(
        onDismissRequest = {
