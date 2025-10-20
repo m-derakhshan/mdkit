@@ -1,0 +1,30 @@
+package media.hiway.mdkit.permission.presentation.state
+
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import media.hiway.mdkit.permission.presentation.view_model.PermissionViewModel
+
+class PermissionState() {
+
+    internal lateinit var permissionHelper: PermissionViewModel
+
+    private val _result = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val result = _result.asStateFlow()
+
+
+    internal fun updateResult(result: Map<String, Boolean>) {
+        permissionHelper.onResult(result = result)
+        _result.update { result }
+    }
+
+
+    fun askPermission() {
+        permissionHelper.onAskPermission()
+    }
+
+    fun onConsumeRational() {
+        permissionHelper.onConsumeRational()
+    }
+
+}

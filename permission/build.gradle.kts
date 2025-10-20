@@ -1,26 +1,22 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
     alias(libs.plugins.dagger.hilt.android.plugin)
+    id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
-    namespace = "media.hiway.mdkit"
+    namespace = "media.hiway.mdkit.permission"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "media.hiway.mdkit"
         minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -40,13 +36,16 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
-kotlin{
+
+kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
     }
 }
+
 
 dependencies {
 
@@ -67,16 +66,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
+dependencies {
+    implementation(libs.androidx.datastore)
+    implementation(libs.jetbrains.kotlinx.serialization.json)
+}
 
 dependencies{
-    implementation(project(":translator"))
-    implementation(project(":floating_view"))
-    implementation(project(":permission"))
-
-
-
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
-}
 
+}
