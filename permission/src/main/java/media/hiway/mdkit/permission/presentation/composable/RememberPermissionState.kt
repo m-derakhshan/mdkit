@@ -1,10 +1,12 @@
-package media.hiway.mdkit.permission.presentation.state
+package media.hiway.mdkit.permission.presentation.composable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import media.hiway.mdkit.permission.domain.model.PermissionModel
+import media.hiway.mdkit.permission.presentation.state.PermissionState
 import media.hiway.mdkit.permission.presentation.view_model.PermissionViewModel
+
 
 @Composable
 fun rememberPermissionState(
@@ -12,9 +14,10 @@ fun rememberPermissionState(
     permissions: List<PermissionModel>
 ): PermissionState {
     val viewModel =
-        hiltViewModel<PermissionViewModel, PermissionViewModel.Factory>(creationCallback = { factory ->
-            factory.create(maxRequest = maxRequest, permissions = permissions)
-        })
+        hiltViewModel<PermissionViewModel, PermissionViewModel.Factory>(
+            key = permissions.hashCode().toString(),
+            creationCallback = { factory -> factory.create(maxRequest = maxRequest, permissions = permissions) }
+        )
 
     return remember {
         PermissionState().apply {
