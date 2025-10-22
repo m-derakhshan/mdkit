@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import media.hiway.mdkit.permission.presentation.view_model.PermissionViewModel
 
+
 class PermissionState() {
 
     internal lateinit var permissionHelper: PermissionViewModel
@@ -23,8 +24,8 @@ class PermissionState() {
         permissionHelper.onAskPermission()
     }
 
-    fun onConsumeRational() {
-        permissionHelper.onConsumeRational()
+    fun onDismiss() {
+        permissionHelper.onDismiss()
     }
 
 }

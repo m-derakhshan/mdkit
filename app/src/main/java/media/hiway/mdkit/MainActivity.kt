@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import media.hiway.mdkit.permission.domain.model.PermissionModel
 import media.hiway.mdkit.permission.presentation.composable.PermissionHandler
-import media.hiway.mdkit.permission.presentation.state.rememberPermissionState
+import media.hiway.mdkit.permission.presentation.composable.rememberPermissionState
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.use_case.Translator
 import media.hiway.mdkit.translator.presentation.composable.Text
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
                 //----------------- Permission Handler ----------------//
                 val permissionState = rememberPermissionState(
-                    maxRequest = 2,
+                    maxRequest = 10,
                     permissions = listOf(
                         PermissionModel(
                             permission = "android.permission.CAMERA",
@@ -66,14 +66,13 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 )
-
                 PermissionHandler(
                     state = permissionState
                 )
                 { rationals ->
                     AlertDialog(
                         onDismissRequest = {
-                            permissionState.onConsumeRational()
+                            permissionState.onDismiss()
                         },
                         title = {
                             Text("Give permission")
@@ -90,7 +89,6 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-
                 //----------------- Permission Handler ----------------//
 
 
