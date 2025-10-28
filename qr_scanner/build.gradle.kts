@@ -1,20 +1,19 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger.hilt.android.plugin)
-    id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
-    namespace = "media.hiway.mdkit.permission"
-    compileSdk = 36
+    namespace = "media.hiway.mdkit.qr_scanner"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -29,9 +28,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
 
     buildFeatures {
         compose = true
@@ -39,16 +42,7 @@ android {
 
 }
 
-
-kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
-    }
-}
-
-
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -66,10 +60,18 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
+
+//-----------------camera x------------------------//
 dependencies {
-    implementation(libs.androidx.datastore)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.mlkit.vision)
+    implementation(libs.androidx.camera.compose)
+    implementation(libs.google.mlkit.barcode)
+    implementation(libs.androidx.camera.camera2)
 }
+
 
 dependencies{
     implementation(libs.google.dagger.hilt.android)
