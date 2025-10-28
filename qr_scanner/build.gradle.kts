@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -12,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

@@ -40,7 +40,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun QRScanner(
     modifier: Modifier = Modifier,
-    overlay: @Composable () -> Unit,
+    overlay: @Composable () -> Unit = {},
     state: QRCodeState,
 ) {
 

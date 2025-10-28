@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +33,8 @@ import kotlinx.coroutines.launch
 import media.hiway.mdkit.permission.domain.model.PermissionModel
 import media.hiway.mdkit.permission.presentation.composable.PermissionHandler
 import media.hiway.mdkit.permission.presentation.composable.rememberPermissionState
+import media.hiway.mdkit.qr_scanner.composable.QRScanner
+import media.hiway.mdkit.qr_scanner.composable.rememberQRCodeState
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.use_case.Translator
 import media.hiway.mdkit.translator.presentation.composable.Text
@@ -48,6 +52,7 @@ class MainActivity : ComponentActivity() {
     lateinit var translator: Translator
 
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -90,6 +95,19 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 //----------------- Permission Handler ----------------//
+
+
+                //----------------- QR code Scanner ----------------//
+                var launchCamera by remember { mutableStateOf(false) }
+                val qrCodeState = rememberQRCodeState()
+                if (launchCamera)
+                    ModalBottomSheet(onDismissRequest = { launchCamera = false }) {
+                        QRScanner(
+                            modifier = Modifier.fillMaxSize(),
+                            state = qrCodeState
+                        )
+                    }
+                //----------------- QR code Scanner ----------------//
 
 
                 val floatingViewState = rememberFloatingViewState()
@@ -160,11 +178,15 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-
-                    Button(
-                        modifier = Modifier.padding(top = 300.dp),
-                        onClick = { permissionState.askPermission() }) {
-                        Text("show permission dialog")
+                    Column(modifier = Modifier.padding(top = 300.dp)) {
+                        Button(
+                            onClick = { permissionState.askPermission() }) {
+                            Text("show permission dialog")
+                        }
+                        Button(
+                            onClick = { launchCamera = !launchCamera }) {
+                            Text("Launch Camera")
+                        }
                     }
                 }
             }
