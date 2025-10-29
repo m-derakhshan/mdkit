@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
-    androidTestImplementation(libs.google.dagger.hilt.android.testing)
 }
 
 //-------------------timber-------------------//
