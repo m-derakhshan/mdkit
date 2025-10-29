@@ -1,6 +1,6 @@
 [![](https://jitpack.io/v/m-derakhshan/mdkit.svg)](https://jitpack.io/#m-derakhshan/mdkit)
 
-# 🧠 MDKit
+# MDKit
 
 `MDKit` is a Kotlin Android library that provides the core functionality of the Hiway Media applications. It consists of different modules. The purpose of this repo is not to provide
 other ppl usage of the library, but to give and receive idea about the application architecture, best practices and performance points.
