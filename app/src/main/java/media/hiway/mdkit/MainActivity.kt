@@ -35,6 +35,9 @@ import media.hiway.mdkit.permission.presentation.composable.PermissionHandler
 import media.hiway.mdkit.permission.presentation.composable.rememberPermissionState
 import media.hiway.mdkit.qr_scanner.composable.QRScanner
 import media.hiway.mdkit.qr_scanner.composable.rememberQRCodeState
+import media.hiway.mdkit.qr_scanner.utils.QRCodeConfig
+import media.hiway.mdkit.qr_scanner.utils.TORCH
+import media.hiway.mdkit.qr_scanner.utils.TorchConfig
 import media.hiway.mdkit.translator.domain.model.TranslationLanguage
 import media.hiway.mdkit.translator.domain.use_case.Translator
 import media.hiway.mdkit.translator.presentation.composable.Text
@@ -99,7 +102,20 @@ class MainActivity : ComponentActivity() {
 
                 //----------------- QR code Scanner ----------------//
                 var launchCamera by remember { mutableStateOf(false) }
-                val qrCodeState = rememberQRCodeState()
+                val torch = remember { TorchConfig() }
+                val torchState by torch.torchState
+                val qrCodeState = rememberQRCodeState(
+                    config = QRCodeConfig.Builder().addTorchConfig(torch).build()
+                )
+
+                Button(onClick = {
+                    if (torchState == TORCH.OFF)
+                        torch.torchOn()
+                    else
+                        torch.torchOff()
+                }) {
+                    Text(text = "Toggle Torch")
+                }
                 if (launchCamera)
                     ModalBottomSheet(onDismissRequest = { launchCamera = false }) {
                         QRScanner(
@@ -166,10 +182,10 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Column {
                                     Button(onClick = { floatingViewState.close() }) {
-                                        Text(text="close")
+                                        Text(text = "close")
                                     }
                                     Button(onClick = { floatingViewState.minimize() }) {
-                                        Text(text="minimized")
+                                        Text(text = "minimized")
                                     }
                                 }
                             }
@@ -179,11 +195,11 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier.padding(top = 300.dp)) {
                         Button(
                             onClick = { permissionState.askPermission() }) {
-                            Text(text="show permission dialog")
+                            Text(text = "show permission dialog")
                         }
                         Button(
                             onClick = { launchCamera = !launchCamera }) {
-                            Text(text="Launch Camera")
+                            Text(text = "Launch Camera")
                         }
                         Button(onClick = { floatingViewState.open() }) {
                             Text(text = "Open floating view")
