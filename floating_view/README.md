@@ -1,3 +1,27 @@
+## 📦 Installation
+
+Add JitPack to your `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+    }
+}
+````
+
+Then include the library in your `build.gradle.kts`:
+
+```kotlin
+dependencies {
+       implementation("com.github.m-derakhshan.mdkit:floating_view:$LATEST_VERSION")
+}
+```
+
+---
+
 
 ## 🛠️ Usage
 
