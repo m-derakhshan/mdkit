@@ -25,9 +25,9 @@ import media.hiway.mdkit.translator.presentation.utils.TranslationEntryPoint
 
 @Composable
 fun Text(
+    modifier: Modifier = Modifier,
     text: String,
     keepCase: Boolean = false,
-    modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,

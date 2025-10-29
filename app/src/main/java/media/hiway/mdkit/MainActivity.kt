@@ -80,16 +80,16 @@ class MainActivity : ComponentActivity() {
                             permissionState.onDismiss()
                         },
                         title = {
-                            Text("Give permission")
+                            Text(text = "Give permission")
                         },
                         text = {
-                            Text(rationals.joinToString { it })
+                            Text(text = rationals.joinToString { it })
                         },
                         confirmButton = {
                             Button(onClick = {
                                 permissionState.askPermission()
                             }) {
-                                Text("Give permission mf")
+                                Text(text = "Give permission mf")
                             }
                         }
                     )
@@ -146,7 +146,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     Button(onClick = { floatingViewState.open() }) {
-                        Text("open")
+                        Text(text = "open")
                     }
                     FloatingView(state = floatingViewState) {
                         Column {
@@ -168,10 +168,10 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Column {
                                     Button(onClick = { floatingViewState.close() }) {
-                                        Text("close")
+                                        Text(text="close")
                                     }
                                     Button(onClick = { floatingViewState.minimize() }) {
-                                        Text("minimized")
+                                        Text(text="minimized")
                                     }
                                 }
                             }
@@ -181,11 +181,11 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier.padding(top = 300.dp)) {
                         Button(
                             onClick = { permissionState.askPermission() }) {
-                            Text("show permission dialog")
+                            Text(text="show permission dialog")
                         }
                         Button(
                             onClick = { launchCamera = !launchCamera }) {
-                            Text("Launch Camera")
+                            Text(text="Launch Camera")
                         }
                     }
                 }
