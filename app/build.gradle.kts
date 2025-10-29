@@ -10,15 +10,15 @@ plugins {
 }
 
 android {
-    namespace = "media.hiway.mdkit"
-    compileSdk = 36
+    namespace = ProjectConfig.APPLICATION_ID
+    compileSdk = ProjectConfig.COMPILE_SDK
 
     defaultConfig {
-        applicationId = "media.hiway.mdkit"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = ProjectConfig.APPLICATION_ID
+        minSdk = ProjectConfig.MIN_SDK
+        targetSdk = ProjectConfig.TARGET_SDK
+        versionCode = ProjectConfig.VERSION_CODE
+        versionName = ProjectConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,8 +33,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = ProjectConfig.javaSourceCompatibility
+        targetCompatibility = ProjectConfig.javaTargetCompatibility
     }
 
     buildFeatures {
@@ -44,7 +44,7 @@ android {
 
 kotlin{
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = JvmTarget.fromTarget(ProjectConfig.JVM_TARGET)
     }
 }
 
@@ -69,10 +69,10 @@ dependencies {
 
 
 dependencies{
-    implementation(project(":translator"))
-    implementation(project(":floating_view"))
-    implementation(project(":permission"))
-    implementation(project(":qr_scanner"))
+    implementation(project(Translator.MODULE))
+    implementation(project(FloatingView.MODULE))
+    implementation(project(Permission.MODULE))
+    implementation(project(QRScanner.MODULE))
 
 
 
