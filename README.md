@@ -11,7 +11,7 @@ other ppl usage of the library, but to give and receive idea about the applicati
 
 ## 📦 Installation
 
-Add JitPack to your `settings.gradle.kts` or `build.gradle.kts`:
+Add JitPack to your `settings.gradle.kts`:
 
 ```kotlin
 dependencyResolutionManagement {
