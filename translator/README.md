@@ -1,6 +1,6 @@
 ## 📦 Installation
 
-Add JitPack to your `settings.gradle.kts` or `build.gradle.kts`:
+Add JitPack to your `settings.gradle.kts`:
 
 ```kotlin
 dependencyResolutionManagement {
