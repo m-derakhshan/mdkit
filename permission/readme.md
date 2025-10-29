@@ -1,4 +1,26 @@
+## 📦 Installation
 
+Add JitPack to your `settings.gradle.kts` or `build.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+    }
+}
+````
+
+Then include the library in your `build.gradle.kts`:
+
+```kotlin
+dependencies {
+       implementation("com.github.m-derakhshan.mdkit:permission:$LATEST_VERSION")
+}
+```
+
+---
 
 ## 🛠️ Usage
 
