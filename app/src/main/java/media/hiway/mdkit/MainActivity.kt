@@ -145,9 +145,7 @@ class MainActivity : ComponentActivity() {
                             ) { }
                         }
                     }
-                    Button(onClick = { floatingViewState.open() }) {
-                        Text(text = "open")
-                    }
+
                     FloatingView(state = floatingViewState) {
                         Column {
                             Box(
@@ -186,6 +184,9 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = { launchCamera = !launchCamera }) {
                             Text(text="Launch Camera")
+                        }
+                        Button(onClick = { floatingViewState.open() }) {
+                            Text(text = "Open floating view")
                         }
                     }
                 }
