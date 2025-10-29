@@ -25,7 +25,8 @@ dependencies {
 ## 🛠️ Usage
 
 The usage is very simple, all you need is providing a qr code state align with QRScanner composable.
-It is up to you to handle and request for Camera runtime permission. for that, you can use "Permission" module.
+
+It is up to you to handle and request for Camera runtime permission. For that, you can use [`mdkit-permission`](https://github.com/m-derakhshan/mdkit/tree/main/permission).
 
 ```kotlin
 val qrCodeState = rememberQRCodeState()
