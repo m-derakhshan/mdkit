@@ -44,7 +44,8 @@ This is part of the larger `mdkit` monorepo:
 
 * ✅ [`mdkit-translator`](https://github.com/m-derakhshan/mdkit/tree/main/translator) – Application language translator.
 * ✅ [`mdkit-floating view`](https://github.com/m-derakhshan/mdkit/tree/main/floating_view) – A Minimizable view.
-*  ✅ [`mdkit-permission`](https://github.com/m-derakhshan/mdkit/tree/main/permission) – An easy, ready to go, jetpack compose run time permission handler.
+* ✅ [`mdkit-permission`](https://github.com/m-derakhshan/mdkit/tree/main/permission) – An easy, ready to go, jetpack compose run time permission handler.
+* ✅ [`mdkit-qr_scanner`](https://github.com/m-derakhshan/mdkit/tree/main/qr_scanner) – An easy, ready to go, jetpack compose QR Code Scanner which allows you a full modification and controll over the camera layout.
 * ⏳ More coming soon...
 
 ---
