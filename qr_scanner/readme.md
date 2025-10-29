@@ -55,3 +55,15 @@ QRScanner(
     state = qrCodeState
 )
 ```
+
+Also you can add any overlay on camera. to do that, simply use overlay and put your composable inside:
+
+```kotlin
+ QRScanner(
+    modifier = Modifier.fillMaxSize(),
+    state = qrCodeState,
+    overlay = {
+     //-----------your overlay here------------//   
+    }
+)
+```
