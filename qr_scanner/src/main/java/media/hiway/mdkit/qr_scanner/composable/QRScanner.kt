@@ -44,8 +44,10 @@ fun QRScanner(
     state: QRCodeState,
 ) {
 
+    val key = remember{System.identityHashCode(state).toString()}
+
     val helper = hiltViewModel<QRCodeHelper, QRCodeHelper.Factory>(
-        key = state.hashCode().toString(),
+        key =key ,
         creationCallback = { factory ->
             factory.create(state = state)
         }
