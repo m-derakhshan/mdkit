@@ -1,16 +1,19 @@
 package media.hiway.mdkit.qr_scanner.utils
 
-import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class QRCodeState(internal val config: QRCodeConfig? = null) {
-    val qrCode = mutableStateOf<String?>(null)
+    private val _qrCode = MutableStateFlow<String?>(null)
+    val qrCode = _qrCode.asStateFlow()
 
     internal fun setQrCode(result: String?) {
-        qrCode.value = result
+        _qrCode.update { result }
     }
 
     fun consumeQrCode() {
-        qrCode.value = null
+        _qrCode.update { null }
     }
 }
 

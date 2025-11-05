@@ -7,5 +7,5 @@ import media.hiway.mdkit.qr_scanner.utils.QRCodeState
 
 @Composable
 fun rememberQRCodeState(config: QRCodeConfig? = null): QRCodeState {
-    return remember(config) { QRCodeState(config = config) }
+    return remember { QRCodeState(config = config) }
 }

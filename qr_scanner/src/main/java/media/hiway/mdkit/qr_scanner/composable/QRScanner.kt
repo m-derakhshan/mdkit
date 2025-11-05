@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.round
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
 import media.hiway.mdkit.qr_scanner.utils.QRCodeHelper
 import media.hiway.mdkit.qr_scanner.utils.QRCodeState
-import kotlinx.coroutines.delay
 
 
 @Composable
@@ -45,14 +45,12 @@ fun QRScanner(
 ) {
 
     val key = remember{System.identityHashCode(state).toString()}
-
     val helper = hiltViewModel<QRCodeHelper, QRCodeHelper.Factory>(
-        key =key ,
+        key = key ,
         creationCallback = { factory ->
             factory.create(state = state)
         }
     )
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val surfaceRequest by helper.surfaceRequest.collectAsStateWithLifecycle()
