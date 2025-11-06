@@ -1,4 +1,4 @@
-package media.hiway.mdkit
+package media.hiway.mdkit.examples.translator
 
 import dagger.Module
 import dagger.Provides
