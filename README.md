@@ -2,7 +2,10 @@
 
 # MDKit
 
-`MDKit` is a Kotlin Android library that provides the core functionality of the Hiway Media applications. It consists of different modules. For this reason, some modules might not be a good fit to all scenarioes. an example can be the `translator` module. however, there are some generic module suitable for all projects. like run time `permission` handler.
+`MDKit` is a Kotlin Android library that provides the core functionality for Hiway Media applications. It consists of multiple modules, and not all modules may be suitable for every scenario. For example, the `translator` module might not fit all projects. 
+
+However, there are some generic modules that are useful in any project, such as the runtime `permission` handler. Therefore, we recommend installing only the modules you need rather than the entire library at once. Installation instructions are provided within each module.
+
 
 
 
