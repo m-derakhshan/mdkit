@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 kotlin = "2.2.21"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -74,5 +74,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dagger-hilt-android-plugin = { id = "dagger.hilt.android.plugin"}
-google-devtools-ksp = { id = "com.google.devtools.ksp", version = "2.3.0" }
+google-devtools-ksp = { id = "com.google.devtools.ksp", version = "2.3.2" }
 jetbrains-kotlin-serialization-plugin = {id="org.jetbrains.kotlin.plugin.serialization"}
