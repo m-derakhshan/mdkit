@@ -2,6 +2,7 @@ package media.hiway.mdkit.qr_scanner.composable
 
 
 import androidx.camera.compose.CameraXViewfinder
+import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.viewfinder.compose.MutableCoordinateTransformer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -34,9 +35,11 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import media.hiway.mdkit.qr_scanner.utils.QRCodeHelper
-import media.hiway.mdkit.qr_scanner.utils.QRCodeState
+import media.hiway.mdkit.qr_scanner.utils.event.QREvents
+import media.hiway.mdkit.qr_scanner.utils.state.QRCodeState
 
 
+@ExperimentalZeroShutterLag
 @Composable
 fun QRScanner(
     modifier: Modifier = Modifier,
@@ -44,22 +47,24 @@ fun QRScanner(
     state: QRCodeState,
 ) {
 
-    val key = remember{System.identityHashCode(state).toString()}
+    val key = remember { System.identityHashCode(state).toString() }
     val helper = hiltViewModel<QRCodeHelper, QRCodeHelper.Factory>(
-        key = key ,
+        key = key,
         creationCallback = { factory ->
             factory.create(state = state)
         }
     )
+    val innerState by helper.innerState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val surfaceRequest by helper.surfaceRequest.collectAsStateWithLifecycle()
+
     var focusCoordinators by remember { mutableStateOf<Offset?>(null) }
     var showFocus by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(lifecycleOwner) {
-        helper.bindToCamera(context.applicationContext, lifecycleOwner)
+        helper.uiEvents(QREvents.OnBindCamera(context.applicationContext, lifecycleOwner))
     }
 
     LaunchedEffect(showFocus) {
@@ -67,9 +72,9 @@ fun QRScanner(
         showFocus = false
     }
 
-    Box(modifier = modifier) {
 
-        surfaceRequest?.let { request ->
+    Box(modifier = modifier) {
+        innerState.surfaceRequest?.let { request ->
             val coordinateTransformer = remember { MutableCoordinateTransformer() }
             CameraXViewfinder(
                 surfaceRequest = request,
@@ -79,7 +84,7 @@ fun QRScanner(
                     .pointerInput(Unit) {
                         detectTapGestures { tapCoordinates ->
                             with(coordinateTransformer) {
-                                helper.tapToFocus(tapCoords = tapCoordinates.transform())
+                                helper.uiEvents(QREvents.OnTabToFocus(tapCoords = tapCoordinates.transform()))
                             }
                             focusCoordinators = tapCoordinates
                             showFocus = true
@@ -107,5 +112,6 @@ fun QRScanner(
                     .size(48.dp)
             )
         }
+
     }
 }
