@@ -1,4 +1,4 @@
-package media.hiway.mdkit.qr_scanner.utils
+package media.hiway.mdkit.qr_scanner.utils.config
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
