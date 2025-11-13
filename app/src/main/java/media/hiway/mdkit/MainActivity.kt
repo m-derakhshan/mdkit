@@ -28,9 +28,9 @@ class MainActivity : ComponentActivity() {
             MDKitTheme {
 
                 //!------------Use each example at once. comment out the others-----------//
-                TranslatorExample(translator = translator)
-                FloatingViewExample()
-                PermissionExample()
+//                TranslatorExample(translator = translator)
+//                FloatingViewExample()
+//                PermissionExample()
                 QRScannerExample()
                 //!------------Use each example at once. comment out the others-----------//
 

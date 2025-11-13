@@ -148,6 +148,7 @@ internal class QRCodeHelper @AssistedInject constructor(
     fun uiEvents(event: QREvents) {
         when (event) {
             is QREvents.OnBindCamera -> {
+                if (cameraControl != null) return
                 val aspectRatioStrategy = AspectRatioStrategy(
                     RATIO_16_9,
                     FALLBACK_RULE_AUTO
@@ -178,7 +179,8 @@ internal class QRCodeHelper @AssistedInject constructor(
 
                 viewModelScope.launch {
 
-                    val processCameraProvider = ProcessCameraProvider.awaitInstance(event.appContext)
+                    val processCameraProvider =
+                        ProcessCameraProvider.awaitInstance(event.appContext)
                     val camera = processCameraProvider.bindToLifecycle(
                         event.lifecycleOwner,
                         DEFAULT_BACK_CAMERA,
