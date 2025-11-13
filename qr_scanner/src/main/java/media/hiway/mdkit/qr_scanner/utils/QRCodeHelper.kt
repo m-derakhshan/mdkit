@@ -4,8 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Size
+import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
+import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.COORDINATE_SYSTEM_ORIGINAL
@@ -13,6 +16,11 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.core.SurfaceOrientedMeteringPointFactory
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.AspectRatioStrategy.FALLBACK_RULE_AUTO
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
+import androidx.camera.core.resolutionselector.ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.lifecycle.awaitInstance
 import androidx.camera.mlkit.vision.MlKitAnalyzer
@@ -61,6 +69,8 @@ internal class QRCodeHelper @AssistedInject constructor(
         }
     }
 
+    private val _innerState = MutableStateFlow(QRCodeInnerState())
+    val innerState = _innerState.asStateFlow()
 
     private var surfaceMeteringPointFactory: SurfaceOrientedMeteringPointFactory? = null
     private var cameraControl: CameraControl? = null
@@ -69,7 +79,11 @@ internal class QRCodeHelper @AssistedInject constructor(
 
     private var job: Job? = null
 
-    private fun setupAnalyzer(context: Context): ImageAnalysis {
+
+    private fun setupImageAnalysisUseCase(
+        context: Context,
+        resolutionSelector: ResolutionSelector,
+    ): ImageAnalysis {
         val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
             .build()
@@ -78,6 +92,7 @@ internal class QRCodeHelper @AssistedInject constructor(
 
         val imageAnalysisUseCase = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setResolutionSelector(resolutionSelector)
             .build()
 
         val mainExecutor = ContextCompat.getMainExecutor(context)
@@ -103,34 +118,67 @@ internal class QRCodeHelper @AssistedInject constructor(
 
     }
 
-    private val _innerState = MutableStateFlow(QRCodeInnerState())
-    val innerState = _innerState.asStateFlow()
+    private fun setupImagePreviewUseCase(resolutionSelector: ResolutionSelector): Preview {
+        return Preview.Builder()
+            .setResolutionSelector(resolutionSelector)
+            .build().apply {
+                setSurfaceProvider { newSurfaceRequest ->
+                    _innerState.update { state ->
+                        state.copy(
+                            surfaceRequest = newSurfaceRequest
+                        )
+                    }
+                    surfaceMeteringPointFactory = SurfaceOrientedMeteringPointFactory(
+                        newSurfaceRequest.resolution.width.toFloat(),
+                        newSurfaceRequest.resolution.height.toFloat()
+                    )
+                }
+            }
+    }
 
+    private fun setupCaptureImageUseCase(resolutionSelector: ResolutionSelector): ImageCapture {
+        return ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
+            .setResolutionSelector(resolutionSelector)
+            .build()
+    }
+
+
+    @ExperimentalZeroShutterLag
     fun uiEvents(event: QREvents) {
         when (event) {
             is QREvents.OnBindCamera -> {
-                val imageAnalysisUseCase = setupAnalyzer(context = event.appContext)
-                val cameraPreviewUseCase = Preview.Builder().build().apply {
-                    setSurfaceProvider { newSurfaceRequest ->
-                        _innerState.update { state ->
-                            state.copy(
-                                surfaceRequest = newSurfaceRequest
-                            )
-                        }
-                        surfaceMeteringPointFactory = SurfaceOrientedMeteringPointFactory(
-                            newSurfaceRequest.resolution.width.toFloat(),
-                            newSurfaceRequest.resolution.height.toFloat()
-                        )
-                    }
-                }
-                val imageCaptureUseCase = ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG).build().also {
-                        imageCapture = it
-                    }
+                val aspectRatioStrategy = AspectRatioStrategy(
+                    RATIO_16_9,
+                    FALLBACK_RULE_AUTO
+                )
+                val resolutionStrategy = ResolutionStrategy(
+                    Size(1920, 1080),
+                    FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER
+                )
+                val resolutionSelector =
+                    ResolutionSelector.Builder()
+                        .setAspectRatioStrategy(aspectRatioStrategy)
+                        .setResolutionStrategy(resolutionStrategy)
+                        .build()
+
+                val imageAnalysisUseCase = setupImageAnalysisUseCase(
+                    context = event.appContext,
+                    resolutionSelector = resolutionSelector
+                )
+
+                val cameraPreviewUseCase = setupImagePreviewUseCase(
+                    resolutionSelector = resolutionSelector
+                )
+
+                val imageCaptureUseCase = setupCaptureImageUseCase(
+                    resolutionSelector = resolutionSelector
+                )
+                imageCapture = imageCaptureUseCase
 
                 viewModelScope.launch {
-                    val processCameraProvider =
-                        ProcessCameraProvider.awaitInstance(event.appContext)
+
+                    val processCameraProvider = ProcessCameraProvider.awaitInstance(event.appContext)
                     val camera = processCameraProvider.bindToLifecycle(
                         event.lifecycleOwner,
                         DEFAULT_BACK_CAMERA,
