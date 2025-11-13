@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.util.Size
 import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.CameraControl
@@ -78,7 +79,7 @@ internal class QRCodeHelper @AssistedInject constructor(
     private var imageCapture: ImageCapture? = null
 
     private var job: Job? = null
-
+    private var isBinding = false
 
     private fun setupImageAnalysisUseCase(
         context: Context,
@@ -148,7 +149,8 @@ internal class QRCodeHelper @AssistedInject constructor(
     fun uiEvents(event: QREvents) {
         when (event) {
             is QREvents.OnBindCamera -> {
-                if (cameraControl != null) return
+                if (cameraControl != null || isBinding) return
+                isBinding = true
                 val aspectRatioStrategy = AspectRatioStrategy(
                     RATIO_16_9,
                     FALLBACK_RULE_AUTO
@@ -176,24 +178,30 @@ internal class QRCodeHelper @AssistedInject constructor(
                     resolutionSelector = resolutionSelector
                 )
                 imageCapture = imageCaptureUseCase
-
                 viewModelScope.launch {
-
-                    val processCameraProvider =
-                        ProcessCameraProvider.awaitInstance(event.appContext)
-                    val camera = processCameraProvider.bindToLifecycle(
-                        event.lifecycleOwner,
-                        DEFAULT_BACK_CAMERA,
-                        cameraPreviewUseCase, imageAnalysisUseCase, imageCaptureUseCase
-                    )
-                    cameraControl = camera.cameraControl
-                    try {
-                        awaitCancellation()
-                    } finally {
-                        processCameraProvider.unbindAll()
+                    runCatching {
+                        val processCameraProvider =
+                            ProcessCameraProvider.awaitInstance(event.appContext)
+                        val camera = processCameraProvider.bindToLifecycle(
+                            event.lifecycleOwner,
+                            DEFAULT_BACK_CAMERA,
+                            cameraPreviewUseCase, imageAnalysisUseCase, imageCaptureUseCase
+                        )
+                        cameraControl = camera.cameraControl
+                        try {
+                            awaitCancellation()
+                        } finally {
+                            processCameraProvider.unbindAll()
+                            cameraControl = null
+                            isBinding = false
+                        }
+                    }.onFailure {
+                        Log.i("MD Kit", "QRCode Helper, Bind Camera: $it")
                         cameraControl = null
+                        isBinding = false
                     }
                 }
+
             }
 
             is QREvents.OnTabToFocus -> {
