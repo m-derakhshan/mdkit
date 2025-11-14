@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import media.hiway.mdkit.qr_scanner.utils.QRCodeHelper
-import media.hiway.mdkit.qr_scanner.utils.event.QREvents
 import media.hiway.mdkit.qr_scanner.utils.state.QRCodeState
 
 
@@ -64,14 +63,13 @@ fun QRScanner(
 
 
     LaunchedEffect(lifecycleOwner) {
-        helper.uiEvents(QREvents.OnBindCamera(context.applicationContext, lifecycleOwner))
+        helper.bindCamera(context.applicationContext, lifecycleOwner)
     }
 
     LaunchedEffect(showFocus) {
         delay(1000)
         showFocus = false
     }
-
 
     Box(modifier = modifier) {
         innerState.surfaceRequest?.let { request ->
@@ -84,7 +82,7 @@ fun QRScanner(
                     .pointerInput(Unit) {
                         detectTapGestures { tapCoordinates ->
                             with(coordinateTransformer) {
-                                helper.uiEvents(QREvents.OnTabToFocus(tapCoords = tapCoordinates.transform()))
+                                helper.onTabToFocus(tapCoords = tapCoordinates.transform())
                             }
                             focusCoordinators = tapCoordinates
                             showFocus = true

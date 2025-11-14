@@ -4,8 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.util.Size
+import androidx.annotation.OptIn
 import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
@@ -25,7 +25,9 @@ import androidx.camera.core.resolutionselector.ResolutionStrategy.FALLBACK_RULE_
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.lifecycle.awaitInstance
 import androidx.camera.mlkit.vision.MlKitAnalyzer
+import androidx.compose.ui.geometry.Offset
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -46,7 +48,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import media.hiway.mdkit.qr_scanner.utils.config.CameraController
 import media.hiway.mdkit.qr_scanner.utils.config.TorchController
-import media.hiway.mdkit.qr_scanner.utils.event.QREvents
 import media.hiway.mdkit.qr_scanner.utils.state.QRCodeInnerState
 import media.hiway.mdkit.qr_scanner.utils.state.QRCodeState
 import java.io.File
@@ -79,7 +80,6 @@ internal class QRCodeHelper @AssistedInject constructor(
     private var imageCapture: ImageCapture? = null
 
     private var job: Job? = null
-    private var isBinding = false
 
     private fun setupImageAnalysisUseCase(
         context: Context,
@@ -137,6 +137,7 @@ internal class QRCodeHelper @AssistedInject constructor(
             }
     }
 
+    @OptIn(ExperimentalZeroShutterLag::class)
     private fun setupCaptureImageUseCase(resolutionSelector: ResolutionSelector): ImageCapture {
         return ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
@@ -145,73 +146,56 @@ internal class QRCodeHelper @AssistedInject constructor(
     }
 
 
-    @ExperimentalZeroShutterLag
-    fun uiEvents(event: QREvents) {
-        when (event) {
-            is QREvents.OnBindCamera -> {
-                if (cameraControl != null || isBinding) return
-                isBinding = true
-                val aspectRatioStrategy = AspectRatioStrategy(
-                    RATIO_16_9,
-                    FALLBACK_RULE_AUTO
-                )
-                val resolutionStrategy = ResolutionStrategy(
-                    Size(1920, 1080),
-                    FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER
-                )
-                val resolutionSelector =
-                    ResolutionSelector.Builder()
-                        .setAspectRatioStrategy(aspectRatioStrategy)
-                        .setResolutionStrategy(resolutionStrategy)
-                        .build()
+    suspend fun bindCamera(appContext: Context, lifecycleOwner: LifecycleOwner) {
+        val aspectRatioStrategy = AspectRatioStrategy(
+            RATIO_16_9,
+            FALLBACK_RULE_AUTO
+        )
+        val resolutionStrategy = ResolutionStrategy(
+            Size(1920, 1080),
+            FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER
+        )
+        val resolutionSelector =
+            ResolutionSelector.Builder()
+                .setAspectRatioStrategy(aspectRatioStrategy)
+                .setResolutionStrategy(resolutionStrategy)
+                .build()
 
-                val imageAnalysisUseCase = setupImageAnalysisUseCase(
-                    context = event.appContext,
-                    resolutionSelector = resolutionSelector
-                )
+        val imageAnalysisUseCase = setupImageAnalysisUseCase(
+            context = appContext,
+            resolutionSelector = resolutionSelector
+        )
 
-                val cameraPreviewUseCase = setupImagePreviewUseCase(
-                    resolutionSelector = resolutionSelector
-                )
+        val cameraPreviewUseCase = setupImagePreviewUseCase(
+            resolutionSelector = resolutionSelector
+        )
 
-                val imageCaptureUseCase = setupCaptureImageUseCase(
-                    resolutionSelector = resolutionSelector
-                )
-                imageCapture = imageCaptureUseCase
-                viewModelScope.launch {
-                    runCatching {
-                        val processCameraProvider =
-                            ProcessCameraProvider.awaitInstance(event.appContext)
-                        val camera = processCameraProvider.bindToLifecycle(
-                            event.lifecycleOwner,
-                            DEFAULT_BACK_CAMERA,
-                            cameraPreviewUseCase, imageAnalysisUseCase, imageCaptureUseCase
-                        )
-                        cameraControl = camera.cameraControl
-                        try {
-                            awaitCancellation()
-                        } finally {
-                            processCameraProvider.unbindAll()
-                            cameraControl = null
-                            isBinding = false
-                        }
-                    }.onFailure {
-                        Log.i("MD Kit", "QRCode Helper, Bind Camera: $it")
-                        cameraControl = null
-                        isBinding = false
-                    }
-                }
+        val imageCaptureUseCase = setupCaptureImageUseCase(
+            resolutionSelector = resolutionSelector
+        )
+        imageCapture = imageCaptureUseCase
 
-            }
+        val processCameraProvider = ProcessCameraProvider.awaitInstance(appContext)
+        val camera = processCameraProvider.bindToLifecycle(
+            lifecycleOwner,
+            DEFAULT_BACK_CAMERA,
+            cameraPreviewUseCase, imageAnalysisUseCase, imageCaptureUseCase
+        )
+        cameraControl = camera.cameraControl
+        try {
+            awaitCancellation()
+        } finally {
+            processCameraProvider.unbindAll()
+            cameraControl = null
+        }
+    }
 
-            is QREvents.OnTabToFocus -> {
-                val point =
-                    surfaceMeteringPointFactory?.createPoint(event.tapCoords.x, event.tapCoords.y)
-                if (point != null) {
-                    val meteringAction = FocusMeteringAction.Builder(point).build()
-                    cameraControl?.startFocusAndMetering(meteringAction)
-                }
-            }
+    fun onTabToFocus(tapCoords: Offset) {
+        val point =
+            surfaceMeteringPointFactory?.createPoint(tapCoords.x, tapCoords.y)
+        if (point != null) {
+            val meteringAction = FocusMeteringAction.Builder(point).build()
+            cameraControl?.startFocusAndMetering(meteringAction)
         }
     }
 
