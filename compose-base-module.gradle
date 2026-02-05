@@ -1,7 +1,7 @@
-apply plugin: 'com.android.library'
-apply plugin: 'dagger.hilt.android.plugin'
-apply plugin: 'org.jetbrains.kotlin.plugin.compose'
-apply plugin: 'com.google.devtools.ksp'
+apply plugin: "com.android.library"
+apply plugin: "dagger.hilt.android.plugin"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: "com.google.devtools.ksp"
 
 android {
     compileSdk = ProjectConfig.COMPILE_SDK
