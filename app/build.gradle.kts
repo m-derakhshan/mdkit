@@ -2,9 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
     alias(libs.plugins.dagger.hilt.android.plugin)
     alias(libs.plugins.google.devtools.ksp)
 }
@@ -74,10 +72,7 @@ dependencies{
     implementation(project(Permission.MODULE))
     implementation(project(QRScanner.MODULE))
 
-
-
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.google.dagger.hilt.android.compiler)
 }
-
