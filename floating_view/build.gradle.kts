@@ -9,4 +9,7 @@ plugins {
 
 android {
     namespace = FloatingView.NAMESPACE
+    publishing {
+        singleVariant("release")
+    }
 }
