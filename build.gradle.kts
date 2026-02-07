@@ -7,8 +7,6 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) apply false
 }
 
-
-
 buildscript {
     dependencies {
         classpath (libs.jetbrains.kotlin.seralization)
