@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization.plugin)
     alias(libs.plugins.google.devtools.ksp)
+    id("maven-publish")
 }
 
 
