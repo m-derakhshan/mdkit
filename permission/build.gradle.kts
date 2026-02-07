@@ -38,8 +38,26 @@ configure<LibraryExtension> {
         compose = true
     }
 
-}
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 
+}
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.m-derakhshan"
+                artifactId =project.name
+                version = "v1.5.20"
+            }
+        }
+    }
+}
 
 dependencies {
     implementation(libs.androidx.core.ktx)
